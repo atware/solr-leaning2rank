@@ -9,31 +9,28 @@ import org.apache.solr.common.params.SolrParams;
 
 import solr.learning2rank.classifier.Classifier;
 import solr.learning2rank.feature.FeatureExtractor;
-import solr.learning2rank.feature.RankingFeature;
 
-public class PairwiseRankingComparator extends FieldComparator<Double> {
+public class RankingComparator extends FieldComparator<Double> {
 
     private final FeatureExtractor extractor;
     private final Classifier classifier;
 
-    // features of top docs
-    private final RankingFeature[][] topFeatures;
-    // slot of bottom
+    private double topValue;
+    private final double[] topKScores;
     private int bottomSlot;
-
-    private RankingFeature[] currentDocFeature;
+    private double currentValue;
     private Integer currentDocNum = null;
 
-    public PairwiseRankingComparator(SolrParams params, Query query,
+    public RankingComparator(SolrParams params, Query query,
             FeatureExtractor extractor, Classifier classfiler, int numHit) {
+        this.topKScores = new double[numHit];
         this.extractor = extractor;
         this.classifier = classfiler;
-        topFeatures = new RankingFeature[numHit][];
     }
 
     @Override
     public int compare(int slot1, int slot2) {
-        return classifier.predict(topFeatures[slot1], topFeatures[slot2]);
+        return compare(topKScores[slot1], topKScores[slot2]);
     }
 
     @Override
@@ -43,17 +40,18 @@ public class PairwiseRankingComparator extends FieldComparator<Double> {
 
     @Override
     public int compareBottom(int doc) throws IOException {
-        currentDocFeature = extractor.extract(doc);
+        double bottomValue = topKScores[bottomSlot];
+        currentValue = getScore(doc);
         currentDocNum = doc;
-        return classifier.predict(topFeatures[bottomSlot], currentDocFeature);
+        return compare(bottomValue, currentValue);
     }
 
     @Override
     public void copy(int slot, int doc) throws IOException {
         if (currentDocNum != null && currentDocNum == doc) {
-            topFeatures[slot] = currentDocFeature;
+            topKScores[slot] = currentValue;
         } else {
-            topFeatures[slot] = extractor.extract(doc);
+            topKScores[slot] = getScore(doc);
         }
     }
 
@@ -66,12 +64,30 @@ public class PairwiseRankingComparator extends FieldComparator<Double> {
 
     @Override
     public Double value(int slot) {
-        return 0.0;
+        return topKScores[slot];
     }
 
     @Override
-    public int compareDocToValue(int doc, Double value) throws IOException {
-        return 0;
+    public int compareTop(int doc) throws IOException {
+        double value = getScore(doc);
+        return compare(topValue, value);
     }
 
+    @Override
+    public void setTopValue(Double value) {
+        this.topValue = value;
+    }
+
+    private int compare(double value1, double value2) {
+        if (value1 > value2) {
+            return 1;
+        } else if (value1 == value2) {
+            return 0;
+        }
+        return -1;
+    }
+
+    private double getScore(int doc) throws IOException {
+        return classifier.getScore(extractor.extract(doc));
+    }
 }

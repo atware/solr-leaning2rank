@@ -8,7 +8,6 @@ import solr.learning2rank.feature.RankingFeature;
  * ペアワイズ
  * 
  * @author atwkwbr
- * 
  */
 public interface Classifier {
 
@@ -20,8 +19,10 @@ public interface Classifier {
     void init(NamedList<?> initParams);
 
     /**
-     * @return retun number < 0: leftのdocumentがrightのdocumentより先にソートされる<br>
-     *         retun number > 0; leftのdocumentがrightのdocumentより後にソートされる
+     * w*x
+     * 
+     * @param target
+     * @return
      */
-    int predict(RankingFeature[] left, RankingFeature[] right);
+    double getScore(RankingFeature[] target);
 }

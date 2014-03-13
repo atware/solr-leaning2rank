@@ -8,14 +8,14 @@ import org.apache.solr.common.params.*;
 import solr.learning2rank.classifier.Classifier;
 import solr.learning2rank.feature.FeatureExtractor;
 
-public class PairwiseRankingComparatorSource extends FieldComparatorSource {
+public class RankingComparatorSource extends FieldComparatorSource {
 
     private final FeatureExtractor extractor;
     private final Classifier classifier;
     private final SolrParams params;
     private final Query query;
 
-    public PairwiseRankingComparatorSource(FeatureExtractor extractor,
+    public RankingComparatorSource(FeatureExtractor extractor,
             Classifier classifier, SolrParams params, Query query) {
         this.extractor = extractor;
         this.classifier = classifier;
@@ -26,7 +26,7 @@ public class PairwiseRankingComparatorSource extends FieldComparatorSource {
     @Override
     public FieldComparator<?> newComparator(String fieldname, int numHits,
             int sortPos, boolean reversed) throws IOException {
-        return new PairwiseRankingComparator(params, query, extractor,
+        return new RankingComparator(params, query, extractor,
                 classifier, numHits);
     }
 }

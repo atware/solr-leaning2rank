@@ -29,39 +29,17 @@ public class LiblinearClassifier implements Classifier {
     }
 
     @Override
-    public int predict(RankingFeature[] left, RankingFeature[] right) {
-        Map<Integer, double[]> map = new TreeMap<Integer, double[]>();
-        for (RankingFeature feature : left) {
-            double[] values = new double[2];
-            values[0] = feature.getValue();
-            map.put(feature.getIndex(), values);
+    public double getScore(RankingFeature[] target) {
+        double[] w = model.getFeatureWeights();
+        double score = 0.0;
+        for (RankingFeature rankingFeature : target) {
+            int idx = rankingFeature.getIndex();
+            double value = scaler.scale(idx, rankingFeature.getValue());
+            score += w[idx] * value;
         }
-        for (RankingFeature feature : right) {
-            double[] values = map.get(feature.getIndex());
-            if (values == null) {
-                values = new double[2];
-            }
-            values[1] = feature.getValue();
+        if (model.getBias() > 0) {
+            score += w[w.length - 1]; //bias
         }
-        Feature[] fns = new Feature[map.size()];
-        int i = 0;
-        for (Entry<Integer, double[]> entry : map.entrySet()) {
-            int featureIndex = entry.getKey();
-            double[] values = entry.getValue();
-            double featureValue = values[0] - values[1];
-            if (scaler != null) {
-                featureValue = scaler.scale(featureIndex, featureValue);
-            }
-            // Liblinearの素性インデックスは1始まり
-            Feature feature = new FeatureNode(featureIndex + 1, featureValue);
-            fns[i++] = feature;
-        }
-        double predict = Linear.predict(model, fns);
-        if (predict >= 0.0) {
-            return -1;
-        } else if (predict == 0.0) {
-            return 0;
-        }
-        return 1;
+        return score;
     }
 }
