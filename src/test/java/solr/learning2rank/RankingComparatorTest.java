@@ -44,8 +44,8 @@ public class RankingComparatorTest {
     @BeforeClass
     public static void setUpBeforeClass() throws Exception {
         directory = new RAMDirectory();
-        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_47);
-        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_47,
+        Analyzer analyzer = new StandardAnalyzer(Version.LUCENE_48);
+        IndexWriterConfig config = new IndexWriterConfig(Version.LUCENE_48,
                 analyzer);
         IndexWriter indexWriter = new IndexWriter(directory, config);
         addDocument(indexWriter, "10");

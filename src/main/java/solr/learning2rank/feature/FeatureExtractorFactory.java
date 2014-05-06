@@ -20,6 +20,7 @@ public abstract class FeatureExtractorFactory {
             throw new SolrException(ErrorCode.BAD_REQUEST,
                     "Unspecified feature extractor factory class name");
         }
+        factoryName = factoryName.trim();
         FeatureExtractorFactory factory = null;
         try {
             Class<? extends FeatureExtractorFactory> clzz = Class.forName(

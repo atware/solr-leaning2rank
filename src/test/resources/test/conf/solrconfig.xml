@@ -1,0 +1,23 @@
+<?xml version="1.0" ?>
+<config>
+	<luceneMatchVersion>4.8</luceneMatchVersion>
+	<codecFactory class="solr.SchemaCodecFactory" />
+	<directoryFactory name="DirectoryFactory"
+		class="${solr.directoryFactory:solr.RAMDirectoryFactory}" />
+	<searchComponent name="rescore"
+		class="solr.learning2rank.RankingComponent">
+		<lst name="extractor">
+			<str name="factory">solr.learning2rank.RankingComponentTest$TestFeatureExtractorFactory</str>
+			<lst name="init" />
+		</lst>
+		<lst name="classifier">
+			<str name="factory">solr.learning2rank.RankingComponentTest$TestClassifierFactory</str>
+			<list name="init" />
+		</lst>
+	</searchComponent>
+	<requestHandler name="rescore" class="solr.SearchHandler">
+		<arr name="components">
+			<str>rescore</str>
+		</arr>
+	</requestHandler>
+</config>

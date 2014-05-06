@@ -15,6 +15,7 @@ public abstract class ClassifierFactory {
             throw new SolrException(ErrorCode.BAD_REQUEST,
                     "Unspecified classifier factory class.");
         }
+        factoryName = factoryName.trim();
         ClassifierFactory factory = null;
         try {
             Class<? extends ClassifierFactory> clzz = Class

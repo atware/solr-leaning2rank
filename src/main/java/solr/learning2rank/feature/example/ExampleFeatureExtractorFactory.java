@@ -11,7 +11,6 @@ public class ExampleFeatureExtractorFactory extends FeatureExtractorFactory {
 
     @Override
     public void init(NamedList<?> initParams) {
-        // settings for connecting to external resources
     }
 
     @Override

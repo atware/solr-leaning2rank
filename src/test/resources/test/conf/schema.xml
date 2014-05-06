@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<schema name="example" version="1.5">
+	<!-- fields -->
+	<field name="_version_" type="long" indexed="true" stored="true" />
+	<field name="id" type="string" indexed="true" stored="true" required="true" multiValued="false" />
+	<field name="first_sort" type="tint" indexed="true" stored="true" multiValued="false" />
+	<field name="second_sort" type="tint" indexed="true" stored="true" multiValued="false" />
+	<uniqueKey>id</uniqueKey>
+	<!-- fieldTypess -->
+	<fieldType name="string" class="solr.StrField" />
+	<fieldType name="long" class="solr.TrieLongField" precisionStep="0" positionIncrementGap="0" />
+	<fieldType name="tint" class="solr.TrieIntField" precisionStep="8" positionIncrementGap="0" />
+</schema>

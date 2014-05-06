@@ -12,7 +12,6 @@ import org.apache.lucene.index.Terms;
 import org.apache.lucene.index.TermsEnum;
 import org.apache.lucene.search.Query;
 import org.apache.lucene.util.BytesRef;
-import org.apache.solr.common.params.SolrParams;
 
 import solr.learning2rank.feature.FeatureExtractor;
 import solr.learning2rank.feature.RankingFeature;
